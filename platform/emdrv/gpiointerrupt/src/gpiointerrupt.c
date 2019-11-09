@@ -128,24 +128,24 @@ static void GPIOINT_IRQDispatcher(uint32_t iflags)
   }
 }
 
-/***************************************************************************//**
- * @brief
- *   GPIO EVEN interrupt handler. Interrupt handler clears all IF even flags and
- *   call the dispatcher passing the flags which triggered the interrupt.
- *
- ******************************************************************************/
-void GPIO_EVEN_IRQHandler(void)
-{
-  uint32_t iflags;
-
-  /* Get all even interrupts. */
-  iflags = GPIO_IntGetEnabled() & 0x00005555;
-
-  /* Clean only even interrupts. */
-  GPIO_IntClear(iflags);
-
-  GPIOINT_IRQDispatcher(iflags);
-}
+///***************************************************************************//**
+// * @brief
+// *   GPIO EVEN interrupt handler. Interrupt handler clears all IF even flags and
+// *   call the dispatcher passing the flags which triggered the interrupt.
+// *
+// ******************************************************************************/
+//void GPIO_EVEN_IRQHandler(void)
+//{
+//  uint32_t iflags;
+//
+//  /* Get all even interrupts. */
+//  iflags = GPIO_IntGetEnabled() & 0x00005555;
+//
+//  /* Clean only even interrupts. */
+//  GPIO_IntClear(iflags);
+//
+//  GPIOINT_IRQDispatcher(iflags);
+//}
 
 /***************************************************************************//**
  * @brief

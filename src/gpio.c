@@ -5,38 +5,87 @@
  *      Author: Dan Walkes
  */
 #include "gpio.h"
-#include "em_gpio.h"
-#include <string.h>
+/**
+ * TODO: define these.  See the radio board user guide at https://www.silabs.com/documents/login/user-guides/ug279-brd4104a-user-guide.pdf
+ * and GPIO documentation at https://siliconlabs.github.io/Gecko_SDK_Doc/efm32g/html/group__GPIO.html
+ */
+#define	LED0_port   (gpioPortF)
+#define LED0_pin	(4)
+#define LED1_port   (gpioPortF)
+#define LED1_pin    (5)
 
+#define PB0_BUTTON_PORT	(gpioPortF)
+#define PB0_BUTTON_PIN 	(6)
+#define PB1_BUTTON_PORT	(gpioPortF)
+#define PB1_BUTTON_PIN	(7)
 
-#define	LED0_port gpioPortF
-#define LED0_pin	4
-#define LED1_port gpioPortF
-#define LED1_pin 5
+uint8_t push_button0 =0;
+uint32_t PB_flag =0;
+
+/*******************************************************************************************************
+ * Function Name: gpioInit()
+ * Function to initialize the gpio pins for Load power Management.
+ *******************************************************************************************************/
+
 
 void gpioInit()
 {
-	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateStrong);
-	//GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
-	GPIO_PinModeSet(LED0_port, LED0_pin, gpioModePushPull, false);
-	GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateStrong);
-	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
-	GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
+
+	GPIO_PinModeSet(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN, gpioModePushPull, false);
+	GPIO_PinModeSet(PB0_BUTTON_PORT, PB0_BUTTON_PIN, gpioModeInputPull, true);
+	GPIO_PinModeSet(PB1_BUTTON_PORT,PB1_BUTTON_PIN, gpioModeInputPull, true);
+	NVIC_EnableIRQ(GPIO_EVEN_IRQn);	//Enable NVIC
+	GPIO_IntClear(GPIO_IntGet()); //Clear Interrupt
+	GPIO_IntConfig(PB0_BUTTON_PORT,PB0_BUTTON_PIN,true,true,true); //Configure GPIO interrupt with Rising and Falling edges.
+
 }
 
-void gpioLed0SetOn()
+
+/******************************************
+ * Function Name: gpioEnableDisplay()
+ *
+ * This function sets the gpio pin of the LCD for display.
+ *@input : None
+ *@return:None
+ ******************************************/
+
+void gpioEnableDisplay()
 {
-	GPIO_PinOutSet(LED0_port,LED0_pin);
+	GPIO_PinOutSet(LCD_PORT_DISP_SEL,LCD_PIN_DISP_SEL);
 }
-void gpioLed0SetOff()
+
+/******************************************
+ * Function Name: gpioSetDisplayExtcomin(bool high)
+ *
+ * This function changes the state of the pin  w.r.t. the passed boolean vlaue.
+ *@input : Bool
+ *@return:None
+ ******************************************/
+
+void gpioSetDisplayExtcomin(bool high)
 {
-	GPIO_PinOutClear(LED0_port,LED0_pin);
+	if (high == false)
+	{
+	GPIO_PinOutClear(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
+	}
+	if (high == true)
+	{
+	GPIO_PinOutSet(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
+	}
+
 }
-void gpioLed1SetOn()
+
+
+void GPIO_EVEN_IRQHandler()
 {
-	GPIO_PinOutSet(LED1_port,LED1_pin);
+	CORE_ATOMIC_IRQ_DISABLE();
+	static int temp_int;
+	temp_int = GPIO_IntGet();
+	GPIO_IntClear(temp_int);
+	push_button0 ^=1;	//Change the status of the pushbutton0
+	LOG_INFO("Entered : %d \n",push_button0);
+	PB_flag |=0x11;
+	gecko_external_signal(PB_flag);	//External signale to gecko
+	CORE_ATOMIC_IRQ_ENABLE();
 }
-void gpioLed1SetOff()
-{
-	GPIO_PinOutClear(LED1_port,LED1_pin);
-}
+

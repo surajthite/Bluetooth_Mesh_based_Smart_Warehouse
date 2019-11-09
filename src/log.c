@@ -8,16 +8,25 @@
 #include "retargetserial.h"
 #include "log.h"
 #include <stdbool.h>
+#include "letimer0.h"
+#include "em_letimer.h"
 
+uint16_t current_time = 0;
+uint32_t total_time =0;
+extern uint32_t rollover_count;
 #if INCLUDE_LOGGING
+
 /**
  * @return a timestamp value for the logger, typically based on a free running timer.
  * This will be printed at the beginning of each log message.
  */
 uint32_t loggerGetTimestamp(void)
 {
-	//return timerGetRunTimeMilliseconds();
-	return 0;
+
+
+	current_time = LETIMER_CounterGet(LETIMER0); 		  // Find the current LETIMER0 CNT value
+	total_time = 3000*rollover_count + current_time;	 // implement the roll overs and add them to current value
+	return total_time;									//return the count value for LOGGING
 }
 
 /**

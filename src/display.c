@@ -18,9 +18,11 @@
 #include "gpio.h"
 #include "log.h"
 #include "display.h"
+#include "native_gecko.h"
 #include "hardware/kit/common/drivers/display.h"
 //#include "scheduler.h" // Add a reference to your module supporting scheduler events for display update
 //#include "timer.h" // Add a reference to your module supporting configuration of underflow events here
+#include "gpio.h"
 
 
 #if ECEN5823_INCLUDE_DISPLAY_SUPPORT
@@ -198,7 +200,8 @@ void displayInit()
 	}
 #if SCHEDULER_SUPPORTS_DISPLAY_UPDATE_EVENT
 #if TIMER_SUPPORTS_1HZ_TIMER_EVENT
-	timerEnable1HzSchedulerEvent(Scheduler_DisplayUpdate);
+	//Call the gecko command to set the software timer for 1 second. 1 sec=32768 and pass the handler along with mode set to 0 for repeating mode.
+	 gecko_cmd_hardware_set_soft_timer(32768, LCD_UPDATE, 0);
 #else
 #warning "Timer does not support scheduling 1Hz event.  Please implement for full display support"
 #endif
@@ -218,7 +221,7 @@ bool displayUpdate()
 	struct display_data *display = displayGetData();
 	display->last_extcomin_state_high = !display->last_extcomin_state_high;
 #if GPIO_SET_DISPLAY_EXT_COMIN_IMPLEMENTED
-	gpioSetDisplayExtcomin(display->last_extcomin_state_high);
+	gpioSetDisplayExtcomin(display->last_extcomin_state_high); //Change the status of EXTCOMIN
 #else
 #warning "gpioSetDisplayExtcomin is not implemented.  Please implement for display support"
 #endif
