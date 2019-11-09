@@ -407,6 +407,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 #else
 		sprintf(name, "5823Sub%02x:%02x", pAddr->addr[1], pAddr->addr[0]);	//If subscriber print 5823 subscriber
 		displayPrintf(DISPLAY_ROW_NAME, "%s", name);
+
 #endif
 		//Print the device ID
 		displayPrintf(DISPLAY_ROW_BTADDR, " %x:%x:%x:%x:%x:%x", pAddr-> addr[5], pAddr-> addr[4], pAddr-> addr[3], pAddr-> addr[2], pAddr-> addr[1], pAddr-> addr[0]);	//Print the address on the LCD Screen

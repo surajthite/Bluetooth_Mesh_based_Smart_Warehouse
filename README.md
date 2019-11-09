@@ -1,5 +1,6 @@
 # ECEN 5823 Bluetooth Mesh Skeleton Project
 
+The command Table has been referenced from the command table given by Dan Walkes.
 This project contains skeleton code used for coursework in University of Colorado [ECEN 5823 IoT Embedded Firmware](https://sites.google.com/colorado.edu/ecen5823/home).
 
 Below is an overview of the sequence used to generate this repository:
