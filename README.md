@@ -1,4 +1,4 @@
-# ECEN 5823 Bluetooth Mesh Project
+# ECEN 5823  Smart Warehouse using Bluetooth Mesh
 
 ## Project Report Links
 Group Report Link: https://drive.google.com/drive/u/0/folders/1RqWI9Ib8qz7QSDP-vW7VUy4CDlU-Utzh
