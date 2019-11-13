@@ -1,8 +1,7 @@
 # ECEN 5823  Smart Warehouse using Bluetooth Mesh
 
 ## Project Report Links
-Group Report Link: https://drive.google.com/drive/u/0/folders/1RqWI9Ib8qz7QSDP-vW7VUy4CDlU-Utzh
-
+Group Report Link: https://drive.google.com/drive/u/0/folders/1ykmPEbFEqN66oZjWkk3bYSzlcuucPcYD
 Suraj Thite Report Link: https://drive.google.com/drive/u/0/folders/1BoQd0KOCjRzPxWxYD4BFsDIo3lK3fTrC
 
 ### Project Status
