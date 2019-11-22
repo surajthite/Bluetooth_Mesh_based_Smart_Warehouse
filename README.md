@@ -5,9 +5,7 @@ Group Report Link: https://drive.google.com/drive/u/0/folders/1ykmPEbFEqN66oZjWk
 Suraj Thite Report Link: https://drive.google.com/drive/u/0/folders/1BoQd0KOCjRzPxWxYD4BFsDIo3lK3fTrC
 
 ### Project Status
-1. Included base repository as per assignment-10 
-2. Configured LCD display with 1Hz screen refreshing rate via software external timer event in the BLE mesh [Working]
-3. Implemented state machine model to sample the data from the sensor via I2C interface. [Working]
-4. Implemented logging functionality for debugging purposes [Working].
-5. Implemented BLE stack to provision a node as a BLE server and  implement ON OFF sensor model.
-
+1. Configured LCD display with 1Hz screen refreshing rate via software external timer event in the BLE mesh.
+2. Implemented state machine model to sample the data from the sensor via I2C interface.
+3. Initialized Mesh LPN handled friendship events in BLE mesh stack with friend node.
+4. Implemented GPIO interrupts for UI interface to display sensor data on the LCD screen.
