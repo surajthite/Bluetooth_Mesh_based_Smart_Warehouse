@@ -8,7 +8,7 @@
   </capabilities_declare>
   
   <!--Generic Access-->
-  <service advertise="false" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
+  <service advertise="true" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
     <informativeText>Abstract:  The generic_access service contains generic information about the device. All available Characteristics are readonly.  </informativeText>
     <capabilities>
       <capability>mesh_default</capability>
@@ -30,7 +30,7 @@
   </service>
   
   <!--Device Information-->
-  <service advertise="false" id="manufacturer" name="Device Information" requirement="mandatory" sourceId="org.bluetooth.service.device_information" type="primary" uuid="180A">
+  <service advertise="true" id="manufacturer" name="Device Information" requirement="mandatory" sourceId="org.bluetooth.service.device_information" type="primary" uuid="180A">
     <informativeText>Abstract:  The Device Information Service exposes manufacturer and/or vendor information about a device.  Summary:  This service exposes manufacturer information about a device. The Device Information Service is instantiated as a Primary Service. Only one instance of the Device Information Service is exposed on a device.  </informativeText>
     <capabilities>
       <capability>mesh_default</capability>
@@ -45,7 +45,7 @@
   </service>
   
   <!--Mesh Provisioning Service-->
-  <service advertise="false" name="Mesh Provisioning Service" requirement="mandatory" sourceId="com.silabs.service.mesh_provisioning" type="primary" uuid="1827">
+  <service advertise="true" name="Mesh Provisioning Service" requirement="mandatory" sourceId="com.silabs.service.mesh_provisioning" type="primary" uuid="1827">
     <informativeText>Abstract:  The Mesh Provisioning Service allows a Provisioning Client to provision a Provisioning Server to allow it to participate in the mesh network.  </informativeText>
     <capabilities>
       <capability>mesh_provisioning_service</capability>
@@ -67,7 +67,7 @@
   </service>
   
   <!--Mesh Proxy Service-->
-  <service advertise="false" name="Mesh Proxy Service" requirement="mandatory" sourceId="com.silabs.service.mesh_proxy" type="primary" uuid="1828">
+  <service advertise="true" name="Mesh Proxy Service" requirement="mandatory" sourceId="com.silabs.service.mesh_proxy" type="primary" uuid="1828">
     <informativeText>Abstract:  The Mesh Proxy Service is used to enable a server to send and receive Proxy PDUs with a client.  </informativeText>
     <capabilities>
       <capability>mesh_proxy_service</capability>
@@ -89,7 +89,7 @@
   </service>
   
   <!--Silicon Labs OTA-->
-  <service advertise="false" name="Silicon Labs OTA" requirement="mandatory" sourceId="com.silabs.service.ota" type="primary" uuid="1D14D6EE-FD63-4FA1-BFA4-8F47B42119F0">
+  <service advertise="true" name="Silicon Labs OTA" requirement="mandatory" sourceId="com.silabs.service.ota" type="primary" uuid="1D14D6EE-FD63-4FA1-BFA4-8F47B42119F0">
     <informativeText>Abstract: The Silicon Labs OTA Service enables over-the-air firmware update of the device. </informativeText>
     <capabilities>
       <capability>mesh_default</capability>

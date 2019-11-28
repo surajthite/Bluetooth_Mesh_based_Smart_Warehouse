@@ -8,7 +8,7 @@
 #include "state_machine.h"
 #include "em_core.h"
 #include "sleep.h"
-
+#include "log.h"
 
 #define sensor_init_time_ms (80)		// 80 milliseconds for the initialization of temperature sensor
 #define adc_time_ms (10)				//10 milli seconds for adc

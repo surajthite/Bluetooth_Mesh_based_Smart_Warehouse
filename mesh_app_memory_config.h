@@ -24,12 +24,11 @@
 
 
 #define MESH_CFG_MAX_ELEMENTS                   1
-#define MESH_CFG_MAX_MODELS                     3
+#define MESH_CFG_MAX_MODELS                     7
 #define MESH_CFG_MAX_APP_BINDS                  4
 #define MESH_CFG_MAX_SUBSCRIPTIONS              4
 #define MESH_CFG_MAX_NETKEYS                    4
 #define MESH_CFG_MAX_APPKEYS                    4
-#define MESH_CFG_MAX_DEVKEYS                    1
 #define MESH_CFG_NET_CACHE_SIZE                 16
 #define MESH_CFG_RPL_SIZE                       32
 #define MESH_CFG_MAX_SEND_SEGS                  4
