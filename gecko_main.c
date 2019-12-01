@@ -47,13 +47,15 @@
 #include "src/ble_mesh_device_type.h"
 #include "src/display.h"
 #include "src/gpio.h"
-
+#include "src/gecko_ble_errors.h"
 /***********************************************************************************************//**
  * @addtogroup Application
  * @{
  **************************************************************************************************/
 extern uint8_t push_button0;  //Status for Push Button Zero
+extern uint8_t push_button1;  //Status for Push Button One
 extern uint32_t PB_flag;	//Flag for external signal from PB0
+extern uint32_t PB_flag1;	//Flag for external signal from PB0
 /***********************************************************************************************//**
  * @addtogroup app
  * @{
@@ -98,7 +100,9 @@ void on_off_request_cb(uint16_t model_id,uint16_t element_index, uint16_t client
 void on_off_change_cb(uint16_t model_id,uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target, uint32_t remaining_ms);
 static void level_change_cb(uint16_t model_id, uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target,  uint32_t remaining_ms);
 static void level_request_cb(uint16_t model_id,uint16_t element_index,uint16_t client_addr,uint16_t server_addr, uint16_t appkey_index,const struct mesh_generic_request *request,uint32_t transition_ms,uint16_t delay_ms,uint8_t request_flags);
+void gecko_bgapi_classes_init_client_lpn(void);
 uint8_t transaction_id =0;
+uint8_t transaction_id1 =0;
 
 
 
@@ -130,7 +134,7 @@ bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
 /**
  * See light switch app.c file definition
  */
-void gecko_bgapi_classes_init_server_lpn(void)
+void gecko_bgapi_classes_init_client_lpn(void)
 {
 	gecko_bgapi_class_dfu_init();
 	gecko_bgapi_class_system_init();
@@ -143,28 +147,18 @@ void gecko_bgapi_classes_init_server_lpn(void)
 	gecko_bgapi_class_mesh_node_init();
 	gecko_bgapi_class_mesh_proxy_init();
 	gecko_bgapi_class_mesh_proxy_server_init();
-	gecko_bgapi_class_mesh_generic_server_init();
+	gecko_bgapi_class_mesh_generic_client_init();
 	gecko_bgapi_class_mesh_lpn_init();
 }
+
 
 void lpn_init(void)
 {
 	uint16_t ret;
-	ret = gecko_cmd_mesh_lpn_init()->result;
-	if(ret)
-	{
-		LOG_INFO("LPN Init Failed: 0x%X",ret);
-		return;
-	}
+	BTSTACK_CHECK_RESPONSE(gecko_cmd_mesh_lpn_init());
 
 	//COnfigure LPN with following parameters
-	ret = gecko_cmd_mesh_lpn_configure(2, 1 * 1000)->result;
-
-	if(ret)
-	{
-		LOG_INFO("LPN Configuration Failed with return code %X",ret);
-		return;
-	}
+	BTSTACK_CHECK_RESPONSE(gecko_cmd_mesh_lpn_configure(2,6*1000));
 
 	LOG_INFO("Finding friend....");
 
@@ -176,11 +170,11 @@ void lpn_init(void)
 	}
 }
 
-void models_init()
-{
-	mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, on_off_request_cb,on_off_change_cb);
-	mesh_lib_generic_server_register_handler(MESH_GENERIC_LEVEL_SERVER_MODEL_ID,0, level_request_cb,level_change_cb);
-};
+//void models_init()
+//{
+//	mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, on_off_request_cb,on_off_change_cb);
+//	mesh_lib_generic_server_register_handler(MESH_GENERIC_LEVEL_SERVER_MODEL_ID,0, level_request_cb,level_change_cb);
+//};
 /*******************************************************************************************************
  * Function Name: gecko_main_init()
  * Description:
@@ -202,8 +196,8 @@ void gecko_main_init()
 	linklayer_priorities.scan_max = linklayer_priorities.adv_min + 1;
 
 	gecko_stack_init(&config);
-	//Server Initialization for LPN
-	gecko_bgapi_classes_init_server_lpn();
+	//Client Initialization for LPN
+	gecko_bgapi_classes_init_client_lpn();
 	// Initialize coexistence interface. Parameters are taken from HAL config.
 	gecko_initCoexHAL();
 
@@ -248,7 +242,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		}
 		break;
 
-	//Software Timer Timeout Event
+		//Software Timer Timeout Event
 	case gecko_evt_hardware_soft_timer_id:
 		switch (evt->data.evt_hardware_soft_timer.handle)
 		{
@@ -269,26 +263,18 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("Provisiong Started");
 			break;
 
-		//Provisioned Event
+			//Provisioned Event
 		case gecko_evt_mesh_node_provisioned_id:
 			displayPrintf(DISPLAY_ROW_ACTION, "Provisioned");
-
-			mesh_lib_init(malloc,free,9);
-			//Models
-			models_init();
-
-			//Server Init
-			gecko_cmd_mesh_generic_server_init();
-
-			//mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, on_off_request_cb,on_off_change_cb);
-
-			//Initialize LPN
-			lpn_init();
-
-
+//			mesh_lib_init(malloc,free,8);
+//			//Client  Init
+//			gecko_cmd_mesh_generic_client_init();
+//			//mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, on_off_request_cb,on_off_change_cb);
+//			//Initialize LPN
+//			gecko_cmd_mesh_lpn_init();
 			break;
 
-		//Provisionig Failed Event
+			//Provisionig Failed Event
 		case gecko_evt_mesh_node_provisioning_failed_id:
 			displayPrintf(DISPLAY_ROW_ACTION, "Provision Failed");
 			LOG_INFO("provisioning failed, code %x", evt->data.evt_mesh_node_provisioning_failed.result);
@@ -296,53 +282,54 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			gecko_cmd_hardware_set_soft_timer(2*32768, RESET_SW_TIMER_HANDLE, 1);	//SET software timer for 2 seconds to reboot
 			break;
 
-		//Connection Opened Event
+			//Connection Opened Event
 		case gecko_evt_le_connection_opened_id:	//Connection Opened
 			LOG_INFO("In connection opened id");
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");
 			break;
 
-		//Connection Closed Event
+			//Connection Closed Event
 		case gecko_evt_le_connection_closed_id:
 			LOG_INFO("In connection closed id");
 			displayPrintf(DISPLAY_ROW_CONNECTION, " ");
 			break;
 
-		//Mesh Node Reset Event
+			//Mesh Node Reset Event
 		case gecko_evt_mesh_node_reset_id:	//Reset
 			gecko_cmd_hardware_set_soft_timer(2 * 32768,RESET_SW_TIMER_HANDLE , 1);
 			break;
 
-		//Clinet Request Event
+			//Clinet Request Event
 		case gecko_evt_mesh_generic_server_client_request_id:
 			LOG_INFO("In server client request id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
-		//Server State Changed
+			//Server State Changed
 		case gecko_evt_mesh_generic_server_state_changed_id:
 			LOG_INFO("In server state changed id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
-		//Enters this event upon sucessful establishment of friendship
-		 case gecko_evt_mesh_lpn_friendship_established_id:
-			 LOG_INFO("Friendship established");
-			 displayPrintf(DISPLAY_ROW_LPN, "LPN");
-			 break;
+			//Enters this event upon sucessful establishment of friendship
+		case gecko_evt_mesh_lpn_friendship_established_id:
+			LOG_INFO("Friendship established");
+			displayPrintf(DISPLAY_ROW_LPN, "LPN EST.");
+			break;
 
-		 case gecko_evt_mesh_lpn_friendship_failed_id:
-			 LOG_INFO("friendship failed");
-			 displayPrintf(DISPLAY_ROW_LPN, "FRIENDSHIP EST. FAILED");
-			 //System Reset
-			 break;
+		case gecko_evt_mesh_lpn_friendship_failed_id:
+			LOG_INFO("friendship failed");
+			displayPrintf(DISPLAY_ROW_LPN, "FRIENDSHIP-FAILED");
+			//System Reset
+			break;
 
-		 case gecko_evt_mesh_lpn_friendship_terminated_id:
-			 LOG_INFO("FRIENDSHIP TERMINATED");
-			 displayPrintf(DISPLAY_ROW_LPN, "UNFRIENDED");
-			 //Sytem Reset using hardware timer
-			 break;
-		 case gecko_evt_system_external_signal_id:
+		case gecko_evt_mesh_lpn_friendship_terminated_id:
+			LOG_INFO("FRIENDSHIP TERMINATED");
+			displayPrintf(DISPLAY_ROW_LPN, "UNFRIENDED");
+			//Sytem Reset using hardware timer
+			break;
+		case gecko_evt_system_external_signal_id:
+
 
 			if (((evt->data.evt_system_external_signal.extsignals) & PB_flag) != 0)
 			{
@@ -351,32 +338,45 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				uint16 resp;
 				req.kind= mesh_generic_request_on_off;
 				if (push_button0)	//Store the status of PB0
-				req.on_off=0x01;
+					req.on_off=0x01;
 				else
-				req.on_off=0x00;
+					req.on_off=0x00;
 
 				resp = mesh_lib_generic_client_publish(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,0,transaction_id,&req,0,0,0);	//Publish the state of the push button 0.
-				LOG_INFO("Response for mesh_lib_generic_client_publish : %d",resp);
-				transaction_id++;	//increment transaction Id
+				LOG_INFO("Response for mesh_lib_generic_client_publish : %X",resp);
+				transaction_id++;		//increment transaction Id
+				PB_flag =0;
 			}
-				break;
+
+			if (((evt->data.evt_system_external_signal.extsignals) & PB_flag1) != 0)
+			{
+				LOG_INFO("PB1 external Signal");
+				struct mesh_generic_state req1;
+				req1.kind= mesh_generic_state_level;
+				uint16 resp;
+				if (push_button1)	//Store the status of PB1
+					req1.level.level=100;
+				else
+					req1.level.level=0;
+				resp = mesh_lib_generic_client_publish(MESH_GENERIC_LEVEL_CLIENT_MODEL_ID,0,transaction_id1,&req1,0,0,0);
+				LOG_INFO("Response for mesh_lib_generic_client_publish : %X",resp);
+				transaction_id1++;
+				PB_flag1 =0;
+			}
+			break;
 
 
 		case gecko_evt_mesh_node_initialized_id:
 
+
+			gecko_cmd_mesh_generic_client_init();	//Client init
 			LOG_INFO("Inside Mesh node Initialied Id");
 			if (evt->data.evt_mesh_node_initialized.provisioned)	//if node is provisioned
 			{
-				printf("Device Provisioned");
-				mesh_lib_init(malloc,free,9);
 
-				models_init();
-
-				gecko_cmd_mesh_generic_server_init();	//Server init
-
+				LOG_INFO("Device Provisioned");
+				mesh_lib_init(malloc,free,8);
 				lpn_init();
-				//mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, on_off_request_cb,on_off_change_cb);
-				//mesh_lib_generic_server_publish(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,0, mesh_generic_state_on_off);
 				displayPrintf(DISPLAY_ROW_ACTION, "PROVISIONED");
 
 			}
@@ -406,8 +406,8 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 		default:
 			break;
-			}
 	}
+}
 
 /*******************************************************************************************************
  * Function Name: set_device_name(bd_addr *pAddr)
@@ -416,73 +416,73 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
  * @Input:Pointer
  * @Return Type : None
  *******************************************************************************************************/
-	void set_device_name(bd_addr *pAddr)
-	{
+void set_device_name(bd_addr *pAddr)
+{
 
-		char name[20];
-		uint16 res;
+	char name[20];
+	uint16 res;
 #if (DEVICE_IS_ONOFF_PUBLISHER ==1)	//If Publisher Print 5823 Publisher
-		sprintf(name, "5823Pub%02x:%02x", pAddr->addr[1], pAddr->addr[0]);
-		displayPrintf(DISPLAY_ROW_NAME, "%s", name);
+	sprintf(name, "5823Pub%02x:%02x", pAddr->addr[1], pAddr->addr[0]);
+	displayPrintf(DISPLAY_ROW_NAME, "%s", name);
 #else
-		sprintf(name, "5823Sub%02x:%02x", pAddr->addr[1], pAddr->addr[0]);	//If subscriber print 5823 subscriber
-		displayPrintf(DISPLAY_ROW_NAME, "%s", name);
+	sprintf(name, "5823Sub%02x:%02x", pAddr->addr[1], pAddr->addr[0]);	//If subscriber print 5823 subscriber
+	displayPrintf(DISPLAY_ROW_NAME, "%s", name);
 
 #endif
-		//Print the device ID
-		displayPrintf(DISPLAY_ROW_BTADDR, " %x:%x:%x:%x:%x:%x", pAddr-> addr[5], pAddr-> addr[4], pAddr-> addr[3], pAddr-> addr[2], pAddr-> addr[1], pAddr-> addr[0]);	//Print the address on the LCD Screen
-		//Write Data to GATT server
-		res = gecko_cmd_gatt_server_write_attribute_value(gattdb_device_name, 0, strlen(name), (uint8 *)name)->result;
-	}
-	/*******************************************************************************************************
-	 * Function Name: client_request_cb()
-	 * Description:
-	 * This is a Function for Client Request
-	 * @Input:uint16_t model_id,uint16_t element_index, uint16_t client_addr, uint16_t server_addr,uint16_t appkey_index,const struct mesh_generic_request *req, uint32_t transition_ms,uint16_t delay_ms,  uint8_t request_flags
-	 * @Return Type : None
-	 *******************************************************************************************************/
-	void on_off_request_cb(uint16_t model_id,uint16_t element_index, uint16_t client_addr, uint16_t server_addr,uint16_t appkey_index,const struct mesh_generic_request *req, uint32_t transition_ms,uint16_t delay_ms,  uint8_t request_flags)
+	//Print the device ID
+	displayPrintf(DISPLAY_ROW_BTADDR, " %x:%x:%x:%x:%x:%x", pAddr-> addr[5], pAddr-> addr[4], pAddr-> addr[3], pAddr-> addr[2], pAddr-> addr[1], pAddr-> addr[0]);	//Print the address on the LCD Screen
+	//Write Data to GATT server
+	res = gecko_cmd_gatt_server_write_attribute_value(gattdb_device_name, 0, strlen(name), (uint8 *)name)->result;
+}
+/*******************************************************************************************************
+ * Function Name: client_request_cb()
+ * Description:
+ * This is a Function for Client Request
+ * @Input:uint16_t model_id,uint16_t element_index, uint16_t client_addr, uint16_t server_addr,uint16_t appkey_index,const struct mesh_generic_request *req, uint32_t transition_ms,uint16_t delay_ms,  uint8_t request_flags
+ * @Return Type : None
+ *******************************************************************************************************/
+void on_off_request_cb(uint16_t model_id,uint16_t element_index, uint16_t client_addr, uint16_t server_addr,uint16_t appkey_index,const struct mesh_generic_request *req, uint32_t transition_ms,uint16_t delay_ms,  uint8_t request_flags)
+{
+	LOG_INFO("Got recived request, data = %d", req->on_off);
+	if(req->on_off == 0x01)	//If on Status detected
 	{
-		LOG_INFO("Got recived request, data = %d", req->on_off);
-		if(req->on_off == 0x01)	//If on Status detected
-		{
-			LOG_INFO(" ON STATE");	//LOG the values
-			displayPrintf(DISPLAY_ROW_BTADDR2, "BUTTON PRESSED");	//Print on LCD
-		}
-
-		if(req->on_off == 0x00)	//If OFF status is detected
-		{
-			LOG_INFO(" OFF STATE");	//Log the value
-			displayPrintf(DISPLAY_ROW_BTADDR2, "BUTTON RELEASED");	//Print on the LCD
-		}
+		LOG_INFO(" ON STATE");	//LOG the values
+		displayPrintf(DISPLAY_ROW_TEMPVALUE, "BUTTON PRESSED");	//Print on LCD
 	}
 
-	/*******************************************************************************************************
-		 * Function Name: server_change_cb()
-		 * Description:
-		 * This is a Function for Server Change
-		 * @Input:uint16_t model_id,uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target, uint32_t remaining_ms
-		 * @Return Type : None
-		 *******************************************************************************************************/
-	void on_off_change_cb(uint16_t model_id,uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target, uint32_t remaining_ms)
+	if(req->on_off == 0x00)	//If OFF status is detected
 	{
-		LOG_INFO("In on_off__change_cb");
+		LOG_INFO(" OFF STATE");	//Log the value
+		displayPrintf(DISPLAY_ROW_TEMPVALUE, "BUTTON RELEASED");	//Print on the LCD
 	}
+}
 
-	static void level_request_cb(uint16_t model_id,uint16_t element_index,uint16_t client_addr,uint16_t server_addr, uint16_t appkey_index,const struct mesh_generic_request *request,uint32_t transition_ms,uint16_t delay_ms,uint8_t request_flags)
-	{
-		LOG_INFO("In level_change_cb");
-		if(request->level >= 50)
-		{
-			displayPrintf(DISPLAY_ROW_BTADDR2,"ALERT");
-			LOG_INFO("ALERT");
-		}
-	}
+/*******************************************************************************************************
+ * Function Name: server_change_cb()
+ * Description:
+ * This is a Function for Server Change
+ * @Input:uint16_t model_id,uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target, uint32_t remaining_ms
+ * @Return Type : None
+ *******************************************************************************************************/
+void on_off_change_cb(uint16_t model_id,uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target, uint32_t remaining_ms)
+{
+	LOG_INFO("In on_off__change_cb");
+}
 
-	static void level_change_cb(uint16_t model_id, uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target,  uint32_t remaining_ms)
+static void level_request_cb(uint16_t model_id,uint16_t element_index,uint16_t client_addr,uint16_t server_addr, uint16_t appkey_index,const struct mesh_generic_request *request,uint32_t transition_ms,uint16_t delay_ms,uint8_t request_flags)
+{
+	LOG_INFO("In level_change_cb");
+	if(request->level >= 50)
 	{
-		LOG_INFO("In level_change_cb");
+		displayPrintf(DISPLAY_ROW_TEMPVALUE,"ALERT");
+		LOG_INFO("ALERT");
 	}
+}
+
+static void level_change_cb(uint16_t model_id, uint16_t element_index,const struct mesh_generic_state *current, const struct mesh_generic_state *target,  uint32_t remaining_ms)
+{
+	LOG_INFO("In level_change_cb");
+}
 
 
 

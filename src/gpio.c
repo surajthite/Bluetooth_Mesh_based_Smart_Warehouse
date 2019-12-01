@@ -19,8 +19,10 @@
 #define PB1_BUTTON_PORT	(gpioPortF)
 #define PB1_BUTTON_PIN	(7)
 
-uint8_t push_button0 =0;
-uint32_t PB_flag =0;
+uint8_t push_button0=0;
+uint8_t push_button1=0;
+uint32_t PB_flag=0;
+uint32_t PB_flag1=0;
 
 /*******************************************************************************************************
  * Function Name: gpioInit()
@@ -35,9 +37,10 @@ void gpioInit()
 	GPIO_PinModeSet(PB0_BUTTON_PORT, PB0_BUTTON_PIN, gpioModeInputPull, true);
 	GPIO_PinModeSet(PB1_BUTTON_PORT,PB1_BUTTON_PIN, gpioModeInputPull, true);
 	NVIC_EnableIRQ(GPIO_EVEN_IRQn);	//Enable NVIC
+	NVIC_EnableIRQ(GPIO_ODD_IRQn);	//Enable NVIC
 	GPIO_IntClear(GPIO_IntGet()); //Clear Interrupt
 	GPIO_IntConfig(PB0_BUTTON_PORT,PB0_BUTTON_PIN,true,true,true); //Configure GPIO interrupt with Rising and Falling edges.
-
+	GPIO_IntConfig(PB1_BUTTON_PORT,PB1_BUTTON_PIN,true,true,true); //Configure GPIO interrupt with Rising and Falling edges.
 }
 
 
@@ -66,11 +69,11 @@ void gpioSetDisplayExtcomin(bool high)
 {
 	if (high == false)
 	{
-	GPIO_PinOutClear(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
+		GPIO_PinOutClear(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
 	}
 	if (high == true)
 	{
-	GPIO_PinOutSet(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
+		GPIO_PinOutSet(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
 	}
 
 }
@@ -89,3 +92,15 @@ void GPIO_EVEN_IRQHandler()
 	CORE_ATOMIC_IRQ_ENABLE();
 }
 
+void GPIO_ODD_IRQHandler()
+{
+	CORE_ATOMIC_IRQ_DISABLE();
+	static int temp_int;
+	temp_int = GPIO_IntGet();
+	GPIO_IntClear(temp_int);
+	push_button1 ^=1;	//Change the status of the pushbutton0
+	LOG_INFO("Entered PB1: %d \n",push_button1);
+	PB_flag1 |=0x12;
+	gecko_external_signal(PB_flag1);	//External signale to gecko
+	CORE_ATOMIC_IRQ_ENABLE();
+}

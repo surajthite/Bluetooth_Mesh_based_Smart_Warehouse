@@ -88,7 +88,8 @@ gecko_main.o: ../gecko_main.c ../init_mcu.h ../board_features.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/displayls013b7dh03config.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h \
- C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
+ ../src/gecko_ble_errors.h
 
 ../init_mcu.h:
 
@@ -281,3 +282,5 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfiga
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
+
+../src/gecko_ble_errors.h:
