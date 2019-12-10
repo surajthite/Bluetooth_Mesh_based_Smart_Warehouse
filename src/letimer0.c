@@ -11,6 +11,7 @@
 #include "em_cmu.h"
 #include "em_core.h"
 #include "letimer0.h"
+#include "log.h"
 uint32_t rollover_count =0;
 
 uint16_t COMP1_value;
@@ -106,15 +107,14 @@ void timerWaitUs(uint32_t ms)
  *******************************************************************************************************/
 void LETIMER0_IRQHandler(void)  // IRQ Handler
 {
+	//LOG_INFO("COMP1 Interrupt");
 	CORE_ATOMIC_IRQ_DISABLE();
 	uint32_t interrupt = LETIMER_IntGet( LETIMER0 ); // Storing inturrupt register value of LETIMER in temp variable store_int
 	LETIMER_IntClear( LETIMER0, interrupt );  // clear LETIMER inturrupt.
 
-
 	if( interrupt & LETIMER_IFS_COMP1)  // Condition check for COM1
 	{
-		//LETIMER_CompareSet(LETIMER0, 1, 0xFFFF);
-
+		LETIMER_CompareSet(LETIMER0, 1, 0xFFFF);
 		LETIMER_IntDisable(LETIMER0,LETIMER_IFC_COMP1);
 	}
 

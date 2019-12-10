@@ -8,39 +8,36 @@
 
 //Header Files//
 #include "i2c_interrupt.h"
+#include "state_machine.h"
 #include "gatt_db.h"
 
 //Gloabl Variables//
-uint8_t command_temp_sensor = 0xF3;
-uint8_t buffer[2];
-bool  write_status =0;
-bool read_status =0;
-I2C_TransferSeq_TypeDef write_config;
-I2C_TransferSeq_TypeDef read_config;
 
+uint8_t command_ALG_sensor = 0x02;	//Command to read AQI sensor data from I2C bus
+uint8_t aqi_data_buffer[2];	//Buffer to store AQI_data
+bool  write_status =0;	//Flag to store write status
+bool read_status =0;	//Flag to store read status
+I2C_TransferSeq_TypeDef write_config;	//Write config structure
+I2C_TransferSeq_TypeDef read_config;	//Read config structure
+I2C_TransferSeq_TypeDef write_read_config;	//Read config structure
 float Temperature_Val  = 0;//Temporary variable for temprature calculation
-
-uint32_t Temperature_Calc_flag =0;
+uint32_t I2C_Transfer_Error_Flag =0;
+uint32_t I2C_Transfer_Complete_Flag =0;
+uint32_t I2C_Error =0;
 uint32_t Setup_temp_timer_flag =0;
 
+
+extern events event;
 /*******************************************************************************************************
  * Function Name: i2c_int_init()
- * Descrtipiton : This function configures and initializes the interrupts for IC0.
+ * Descrtipiton : This function configures and initializes the interrupts for I2C0.
  * @input:NOne
  * @Return : None
  *******************************************************************************************************/
 void i2c_int_init()
 {
 	I2CSPM_Init_TypeDef i2c_config_int = I2CSPM_INIT_DEFAULT;	// Set Default
-	i2c_config_int.sclPort = gpioPortC;		// SET GPIO PORT C for SCL
-	i2c_config_int.sdaPort = gpioPortC;	// SET GPIO Port C for SDA
-	i2c_config_int.sclPin = 10;	// SET SCL Pin to 10
-	i2c_config_int.sdaPin = 11; //SET SDA Pin to 11
-	i2c_config_int.portLocationScl = 14;	// Set SCL Port Location to 14
-	i2c_config_int.portLocationSda = 16;	// Set SDA Port Location to 16
-	I2CSPM_Init(&i2c_config_int);	//Initalise the i2c with above config
-	NVIC_EnableIRQ(I2C0_IRQn); // Enable NVIC Interrupts
-	I2C_IntEnable(I2C0,I2C_IEN_RXDATAV | I2C_IEN_RXFULL | I2C_IEN_TXC );// Enable Interrupts for i2C
+	I2CSPM_Init(&i2c_config_int);
 }
 
 /*******************************************************************************************************
@@ -51,14 +48,17 @@ void i2c_int_init()
  * @reutn :None
  *******************************************************************************************************/
 
-void Interrupt_write_data()
+void Interrupt_write_data( I2C_TransferSeq_TypeDef init, uint16_t len)
 {
-	write_config.addr        = 0x80 ;  // Left shifted the address by one bit.
-	write_config.flags       = I2C_FLAG_WRITE;
-	write_config.buf[0].data = &command_temp_sensor ;//F3 COmmand For sensor read
-	write_config.buf[0].len  = 1;
-	I2C_TransferInit(I2C0,&write_config);//Init Transfer
-	write_status = 1;//UPdate the Flag Value
+	I2C_TransferReturn_TypeDef ret;
+	init.buf[0].len=len;	//Set the length of the comamnd to be sent
+	init.flags= I2C_FLAG_WRITE;	//Set hte flags to write flag
+	ret=I2CSPM_Transfer(I2C0,&init);	//Initiate polling transfer
+	if(ret != i2cTransferDone)
+	{
+		LOG_INFO("I2C Write error");	//Log the errors
+		return;
+	}
 }
 /*******************************************************************************************************
  * Function Name: Interrupt_read_data
@@ -68,36 +68,87 @@ void Interrupt_write_data()
  * @Return:None
  *******************************************************************************************************/
 
-void Interrupt_read_data()
+uint16_t Interrupt_read_data(I2C_TransferSeq_TypeDef init, uint16_t len)
 {
-	read_config.addr        = 0x80 ;	// Left shift the address by one bit
-	read_config.flags       = I2C_FLAG_READ;
-	read_config.buf[0].data = buffer;
-	read_config.buf[0].len  = 1;
-	read_config.buf[1].data = buffer;
-	read_config.buf[1].len  = 1;
-	I2C_TransferInit(I2C0,&read_config);//Initialize the i2c read transfer
-	read_status = 1;//Update the read flag
+	I2C_TransferReturn_TypeDef ret;
+	uint8_t received_data[2] = {0};	//Initialize the recieve buffer
+	uint16_t temp;
+	init.flags= I2C_FLAG_READ;	//Set the flags to I2c Read
+	init.buf[0].data= received_data;	//Set the pointer to store the value read from the sensor
+	init.buf[0].len=sizeof(received_data);	//Set the length accordingly
+	ret=I2CSPM_Transfer(I2C0,&init); //	//Initiate I2C SPM transfer
+	if(ret != i2cTransferDone)	//Log the errors
+	{
+		LOG_ERROR("I2C Read error");
+	}
+	if(len==1)
+	{
+		temp = received_data[0];	//Send 8 bit value if length passed as 1
+	}
+	else
+	{
+		temp = received_data[0];
+		temp <<= 8;
+		temp|=(received_data[1]);	//send 16 bit value if length passed as 2
+	}
+	return temp;
 }
 
+
 /*******************************************************************************************************
- * Function Name: temp_data_print
- * This function caliberates and reads from the buffer  while setting up the the read status register.
- * The real time Values are printed on the serial port via LOG_INFO function.
+ * Function Name: Interrupt_write_read
+ * This function configures,writes and read mode and tx and rx data  from the buffer.
+ * @input: None
+ * @Return:None
  *******************************************************************************************************/
 
 
-void temp_data_print()
+void Interrupt_write_read()
 {
-	int temp1;
-	int read_val =0;
-	read_val|=((buffer[0]) << 8);//Left Shift the register by 8 bits
-	read_val|= buffer[1];
-	Temperature_Val = ((175.72*(read_val))/65536) - 46.85;// calculate the temperature value.
-	LOG_INFO("Temperature_in_degree_Celsius = %f",Temperature_Val);//at time //%d milli-seconds from startup ",Temperature_Val,loggerGetTimestamp());
-	temp1 = (int)Temperature_Val;
-	displayPrintf(DISPLAY_ROW_TEMPVALUE,"Temperature:%.2f C",Temperature_Val);
+	write_read_config.addr =  SENSOR_ADDR << 1;	//Set the sensor address
+	write_read_config.flags = I2C_FLAG_WRITE_READ;	//Initialize the flags to read write
+	write_read_config.buf[0].len =	1;
+	write_read_config.buf[1].len =	2;
+	write_read_config.buf[0].data = &command_ALG_sensor ;	//COmmand to read CO2 value in ppm
+	write_read_config.buf[1].data = aqi_data_buffer;	//Variable to store the value recieved
+	NVIC_EnableIRQ(I2C0_IRQn);	//Enable interrupts
+	I2C_TransferReturn_TypeDef response = I2C_TransferInit(I2C0, &write_read_config); 		/*Initialising the non polling I2c*/
+	if(response != i2cTransferInProgress)	//Log the errors
+	{
+		LOG_INFO("Failed");
+	}
+	else
+	{
+		LOG_INFO("Transfer Done");
+	}
+	//I2CSPM_Transfer(I2C0,&write_read_config);
+
+	LOG_INFO("Waiting for Interrupts");
 }
+/*******************************************************************************************************
+ * Function Name: void Enable_I2C_Interrupts()
+ * Descrtipiton : Function to enable i2c interrupts
+ * @input:void
+ * @Return : void
+ *******************************************************************************************************/
+
+void Enable_I2C_Interrupts()
+{
+	NVIC_EnableIRQ(I2C0_IRQn); // Enable NVIC Interrupts
+	//I2C_IntEnable(I2C0,I2C_IEN_RXDATAV | I2C_IEN_RXFULL | I2C_IEN_TXC );// Enable Interrupts for i2C
+}
+/*******************************************************************************************************
+ * Function Name: void Disable_I2C_Interrupts()
+ * Descrtipiton : Function to disable i2c interrupts
+ * @input:void
+ * @Return : void
+ *******************************************************************************************************/
+
+void Disable_I2C_Interrupts()
+{
+	NVIC_DisableIRQ(I2C0_IRQn);
+}
+
 
 /*******************************************************************************************************
  * Function Name: I2C0_IRQHandler()
@@ -111,69 +162,19 @@ void I2C0_IRQHandler(void)
 	LOG_INFO("The status code is : %d",i2c_irq_status); // Print the Return Status
 	if(i2c_irq_status == i2cTransferDone)
 	{
-		if(write_status == 1)				// If interrupt detected for the write state , Set the event and clear the FLAG.
-		{
-			//event = Setup_temp_timer;
-			write_status = 0; //Clear write Flag
 
-			Setup_temp_timer_flag |=0x04;//Set the external Flag
-			gecko_external_signal(Setup_temp_timer_flag);
-		}
-		if(read_status == 1)
-		{
-			//event = Temperature_Calc;	// If interrupt detected for the read state , Set the event and clear the FLAG.
-			read_status = 0; // Clear Read Flag
-			Temperature_Calc_flag |=0x10;//Set the external Flag
-			gecko_external_signal(Temperature_Calc_flag);
-
-		}
+		I2C_Transfer_Complete_Flag = 0x30;	//Send external signal upon completion of I2C transfer
+		gecko_external_signal(I2C_Transfer_Complete_Flag);
 	}
-	else
+	else if(i2c_irq_status != i2cTransferInProgress)
 	{
-		switch (i2c_irq_status)	// LOG the error in case of transfer failure.
-		{
-		case i2cTransferNack:
-			LOG_ERROR("\n Received NACK from the sesnor \n");
-			break;
-		case i2cTransferBusErr:
-			LOG_ERROR("\n Bus Error Exist \n");
-			break;
-		case i2cTransferArbLost:
-			LOG_ERROR("\n Bus Arbitration lost \n");
-			break;
-		case i2cTransferUsageFault:
-			LOG_ERROR("\n Usage fault \n");
-			break;
-		case i2cTransferSwFault:
-			LOG_ERROR("\n Software fault \n");
-			break;
-		}
+		LOG_ERROR( "I2C Error: %d",i2c_irq_status);
+		I2C_Transfer_Error_Flag = 0x11;
+		gecko_external_signal(I2C_Transfer_Error_Flag);	//Send external signal upon transfer error
 	}
 	CORE_ATOMIC_IRQ_ENABLE();
 }
 
-/***********************************************************************************************//**
- * Function name : void Temperature_calculation_for_BLE(void)
- *  \brief  This function is called by the application when the periodic measurement timer expires.
- *  \param[in]  buf  Event message.
- *  \return  length of temp measurement.
- **************************************************************************************************/
-void Temperature_calculation_for_BLE(void)
-{
-	uint16_t Temp_Buffer_BLE[5]; //Temporary buffer
-	uint8_t flag =0;
-	uint32_t temp_conv; //Variable to store converted temperature
-	uint8_t *pointertotempbuff = Temp_Buffer_BLE;	//Pointer to temperature buffer array
-
-	UINT8_TO_BITSTREAM(pointertotempbuff ,flag);	// COnvert uin8 to bitstream
-	temp_conv = FLT_TO_UINT32(Temperature_Val * 1000 ,-3); // Convert float value to uint32
-	UINT32_TO_BITSTREAM(pointertotempbuff , temp_conv);	//COnverter uint32 value to bistream
-
-
-//	gecko_cmd_gatt_server_send_characteristic_notification(0xFF , gattdb_temperature_measurement , 5 , Temp_Buffer_BLE); //Send command notification to the BLE client
-
-	//  error=gecko_cmd_gatt_server_send_characteristic_notification(0xFF, gattdb_button_state,2,BTN_BUFF);
-}
 
 
 

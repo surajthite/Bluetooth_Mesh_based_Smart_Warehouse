@@ -61,7 +61,8 @@ src/gpio.o: ../src/gpio.c ../src/gpio.h ../src/log.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h \
- C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
+ ../src/state_machine.h
 
 ../src/gpio.h:
 
@@ -192,3 +193,5 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configurat
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
+
+../src/state_machine.h:

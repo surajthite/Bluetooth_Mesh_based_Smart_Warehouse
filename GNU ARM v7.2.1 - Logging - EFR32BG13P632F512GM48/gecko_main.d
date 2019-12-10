@@ -89,7 +89,16 @@ gecko_main.o: ../gecko_main.c ../init_mcu.h ../board_features.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
- ../src/gecko_ble_errors.h
+ ../src/state_machine.h ../src/main.h ../src/gecko_ble_errors.h \
+ ../src/i2c_interrupt.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h \
+ ../src/gpio.h ../src/main.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h \
+ ../src/display.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h \
+ ../src/state_machine.h ../gecko_main.h
 
 ../init_mcu.h:
 
@@ -283,4 +292,30 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configurat
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
 
+../src/state_machine.h:
+
+../src/main.h:
+
 ../src/gecko_ble_errors.h:
+
+../src/i2c_interrupt.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h:
+
+../src/gpio.h:
+
+../src/main.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h:
+
+../src/display.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h:
+
+../src/state_machine.h:
+
+../gecko_main.h:

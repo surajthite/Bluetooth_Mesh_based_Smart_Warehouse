@@ -22,14 +22,15 @@
 #include "display.h"
 #include "sleep.h"
 void i2c_int_init();
-void Interrupt_write_data();
-void Interrupt_read_data();
-void temp_data_print();
-void Temperature_calculation_for_BLE(void);
+void Interrupt_write_data( I2C_TransferSeq_TypeDef init, uint16_t len);
+uint16_t Interrupt_read_data(I2C_TransferSeq_TypeDef init, uint16_t len);
+void Interrupt_write_read();
 #define INCLUDE_LOG_DEBUG 1
 #define INCLUDE_LOG_INFO 1
-
-
+void Interrupt_write();
+void calculate_ppm();
+void Disable_I2C_Interrupts();
+void Enable_I2C_Interrupts();
 
 
 #endif /* SRC_I2C_INTERRUPT_H_ */

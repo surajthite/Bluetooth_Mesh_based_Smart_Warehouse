@@ -61,7 +61,8 @@ src/letimer0.o: ../src/letimer0.c \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_core.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_common.h \
  ../src/letimer0.h \
- C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h \
+ ../src/log.h
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_letimer.h:
 
@@ -188,3 +189,5 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib
 ../src/letimer0.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h:
+
+../src/log.h:

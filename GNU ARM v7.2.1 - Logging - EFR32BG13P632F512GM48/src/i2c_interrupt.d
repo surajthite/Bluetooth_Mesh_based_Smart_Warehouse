@@ -69,7 +69,7 @@ src/i2c_interrupt.o: ../src/i2c_interrupt.c ../src/i2c_interrupt.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/displayls013b7dh03config.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
- ../src/main.h \
+ ../src/state_machine.h ../src/main.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\soc/native_gecko.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h \
@@ -229,6 +229,8 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\E
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
+
+../src/state_machine.h:
 
 ../src/main.h:
 

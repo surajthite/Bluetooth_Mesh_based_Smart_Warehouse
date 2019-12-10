@@ -55,7 +55,36 @@ src/state_machine.o: ../src/state_machine.c ../src/state_machine.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/efr32bg13p_af_pins.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_common.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h \
- ../src/log.h
+ ../src/log.h ../src/i2c_interrupt.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/hal-config.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/hal-config-board.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\halconfig\inc\hal-config/hal-config-types.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_gpio.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_bus.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_assert.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h \
+ ../src/gpio.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/displayls013b7dh03config.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
+ ../src/main.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\soc/native_gecko.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/gecko_configuration.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_gattdb_def.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_errorcodes.h \
+ ../src/display.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib_color.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/dmd/dmd.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/em_types.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/gecko_main.h
 
 ../src/state_machine.h:
 
@@ -172,3 +201,63 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h:
 
 ../src/log.h:
+
+../src/i2c_interrupt.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/hal-config.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/hal-config-board.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\halconfig\inc\hal-config/hal-config-types.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_gpio.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_bus.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_assert.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h:
+
+../src/gpio.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/displayls013b7dh03config.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
+
+../src/main.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\soc/native_gecko.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/gecko_configuration.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_gattdb_def.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_types.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\common/bg_errorcodes.h:
+
+../src/display.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib_color.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/dmd/dmd.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/em_types.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/gecko_main.h:

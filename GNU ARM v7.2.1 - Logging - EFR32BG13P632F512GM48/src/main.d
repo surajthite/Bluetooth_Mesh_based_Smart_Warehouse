@@ -72,12 +72,18 @@ src/main.o: ../src/main.c \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/displayls013b7dh03config.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfigapp.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
- ../src/display.h \
+ ../src/state_machine.h ../src/display.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib_color.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/dmd/dmd.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/em_types.h \
- ../src/letimer0.h
+ ../src/letimer0.h ../src/i2c_interrupt.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h \
+ ../src/main.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h \
+ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\soc/native_gecko.h:
 
@@ -227,6 +233,8 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/displayconfiga
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
 
+../src/state_machine.h:
+
 ../src/display.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib\glib/glib.h:
@@ -238,3 +246,17 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middl
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\middleware\glib/em_types.h:
 
 ../src/letimer0.h:
+
+../src/i2c_interrupt.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\drivers/i2cspm.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\common\halconfig/i2cspmhalconfig.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emlib\inc/em_i2c.h:
+
+../src/main.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/infrastructure.h:
+
+C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\emdrv\sleep\inc/sleep.h:

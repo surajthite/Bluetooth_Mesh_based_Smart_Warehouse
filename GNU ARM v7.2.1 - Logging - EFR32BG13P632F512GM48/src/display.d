@@ -68,7 +68,7 @@ src/display.o: ../src/display.c \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configuration.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h \
- ../src/display.h \
+ ../src/state_machine.h ../src/display.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\protocol\bluetooth\bt_mesh\inc\soc/native_gecko.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/hal-config.h \
  C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\hardware\kit\EFR32BG13_BRD4104A\config/hal-config-board.h \
@@ -224,6 +224,8 @@ C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/ble-configurat
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty/board_features.h:
 
 C:\Users\BS\ THITE\SimplicityStudio\v4_workspace\soc-btmesh-empty\platform\Device\SiliconLabs\EFR32BG13P\Include/system_efr32bg13p.h:
+
+../src/state_machine.h:
 
 ../src/display.h:
 
