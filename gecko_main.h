@@ -2,7 +2,7 @@
  * gecko_main.h
  *
  *  Created on: Dec 8, 2019
- *      Author: AKSHAY THITE
+ *      Author: SURAJ THITE
  */
 
 #ifndef GECKO_MAIN_H_

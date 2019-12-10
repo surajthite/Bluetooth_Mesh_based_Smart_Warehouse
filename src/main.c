@@ -1,3 +1,12 @@
+
+/*
+ * 	main.c
+ *
+ *  Created on: Sep 25, 2019
+ *      Author: SURAJ THITE
+ */
+
+
 #include <stdbool.h>
 #include "native_gecko.h"
 #include "log.h"
